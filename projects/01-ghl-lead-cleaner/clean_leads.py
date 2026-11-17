@@ -120,12 +120,38 @@ def row_to_dict(row):
     return result
 
 
+def merge_rows(kept, duplicate):
+    """Copy useful details from a duplicate into the row we kept.
+    - Blank fields in the kept row are filled from the duplicate.
+    - Tags and Notes from both rows are combined, so nothing is lost.
+    Existing values in the kept row are never replaced."""
+    for column in GHL_COLUMNS:
+        kept_value = kept[column]
+        new_value = duplicate[column]
+
+        # Nothing to add from the duplicate
+        if new_value is None:
+            continue
+
+        if kept_value is None:
+            # Fill the blank
+            kept[column] = new_value
+        elif column == "Tags":
+            # Combine both tag lists (clean_tags removes repeats)
+            kept[column] = clean_tags(kept_value + "," + new_value)
+        elif column == "Notes" and new_value not in kept_value:
+            # Keep both notes, separated by " | "
+            kept[column] = kept_value + " | " + new_value
+
+
 def split_good_and_rejected(df, clean):
-    """Go through each row once. Decide if it is good, rejected, or a duplicate."""
+    """Go through each row once. Decide if it is good, rejected, or a duplicate.
+    Duplicates are merged into the first matching row, then listed in the rejected file."""
     good_rows = []
+    good_excel_rows = []  # the Excel row number of each good row
     rejected_rows = []
-    seen_emails = {}  # email -> row number where we first saw it
-    seen_phones = {}  # phone -> row number where we first saw it
+    seen_emails = {}  # email -> position of the matching row in good_rows
+    seen_phones = {}  # phone -> position of the matching row in good_rows
     duplicates = 0
 
     for index in df.index:
@@ -141,26 +167,38 @@ def split_good_and_rejected(df, clean):
 
         # 1. Is it missing contact details?
         reason = find_reject_reason(original, row)
-
-        # 2. Is it a duplicate? Check email first, then phone.
-        if reason is None and row["Email"] is not None and row["Email"] in seen_emails:
-            reason = f"duplicate email (same as row {seen_emails[row['Email']]})"
-        if reason is None and row["Phone"] is not None and row["Phone"] in seen_phones:
-            reason = f"duplicate phone (same as row {seen_phones[row['Phone']]})"
-
         if reason is not None:
-            if reason.startswith("duplicate"):
-                duplicates += 1
             original["reject_reason"] = reason
             rejected_rows.append(original)
             continue
 
-        # The row is good. Remember its email and phone for duplicate checks.
-        if row["Email"] is not None:
-            seen_emails[row["Email"]] = excel_row
-        if row["Phone"] is not None:
-            seen_phones[row["Phone"]] = excel_row
-        good_rows.append(row)
+        # 2. Is it a duplicate? Check email first, then phone.
+        match = None  # position in good_rows of the row this one duplicates
+        if row["Email"] is not None and row["Email"] in seen_emails:
+            match = seen_emails[row["Email"]]
+            match_type = "email"
+        elif row["Phone"] is not None and row["Phone"] in seen_phones:
+            match = seen_phones[row["Phone"]]
+            match_type = "phone"
+
+        if match is not None:
+            # Merge the details, then note the duplicate in the rejected file
+            merge_rows(good_rows[match], row)
+            duplicates += 1
+            original["reject_reason"] = f"duplicate {match_type} (merged into row {good_excel_rows[match]})"
+            rejected_rows.append(original)
+        else:
+            # A new lead. Add it to the good list.
+            match = len(good_rows)
+            good_rows.append(row)
+            good_excel_rows.append(excel_row)
+
+        # Remember this lead's email and phone (they may be new after a merge)
+        kept = good_rows[match]
+        if kept["Email"] is not None and kept["Email"] not in seen_emails:
+            seen_emails[kept["Email"]] = match
+        if kept["Phone"] is not None and kept["Phone"] not in seen_phones:
+            seen_phones[kept["Phone"]] = match
 
     good = pd.DataFrame(good_rows, columns=GHL_COLUMNS)
     rejected = pd.DataFrame(rejected_rows, columns=list(df.columns) + ["reject_reason"])
@@ -215,7 +253,7 @@ def main():
     print(f"  Rows in:            {len(df)}")
     print(f"  Rows clean:         {len(good)}")
     print(f"  Rows rejected:      {len(rejected)}")
-    print(f"    - duplicates:     {duplicates}")
+    print(f"    - duplicates:     {duplicates} (details merged into the kept lead)")
     print(f"    - other problems: {len(rejected) - duplicates}")
     print(f"  Clean rows with no email (phone only): {emails_removed}")
     print(f"  Saved: {good_path}")

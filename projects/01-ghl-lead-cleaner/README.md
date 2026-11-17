@@ -12,7 +12,7 @@ Built for marketing VAs and agencies. No coding needed to use it.
 | Messy emails | ` Anna.Test@EXAMPLE.com ` | `anna.test@example.com` |
 | Mixed phone formats | `0917 000 1234`, `(212) 555-0123`, `0491 570 123` | `+639170001234`, `+12125550123`, `+61491570123` |
 | Messy sources | `facebook`, `FB ads`, `Facebook Ad` | `Facebook Ads` |
-| Duplicate leads | Same person 3 times | Kept once |
+| Duplicate leads | Same person 3 times | Kept once, with details from all 3 merged |
 | Unusable rows | No email and no phone | Moved to a separate file with a reason |
 
 Phone numbers from the **Philippines (+63)**, **US (+1)** and **Australia (+61)** are supported.
@@ -110,6 +110,7 @@ You need at least an email column or a phone column.
 
 - **A lead needs a valid email or a valid phone.** If one is bad but the other is fine, the lead is kept and the bad one is left blank.
 - **Duplicates** are found by email first, then by phone. The first one in the file is kept.
+  Details from the copies are merged in: blank fields are filled, and Tags and Notes are combined. Nothing already in the kept lead is overwritten.
 - **Emails are never auto-fixed.** A wrong guess could send your client's emails to a stranger. Bad emails are left blank or the row is rejected.
 - **Ambiguous phone numbers are never guessed.** For example, `9170001234` could be PH or US. The tool uses `--default-country` to decide. Without it, the number is left blank.
 - **Titles are removed** from names (`Dr.`, `Mr.`, `Mrs.`, `Ms.`), so emails say "Hi Anna", not "Hi Dr."
@@ -142,3 +143,4 @@ Files:
 - `clean_leads.py`: main script.
 - `cleaners.py`: one small function per field.
 - `tests/test_cleaners.py`: tests for every phone format and cleaning rule.
+- `tests/test_merge.py`: tests for duplicate merging.

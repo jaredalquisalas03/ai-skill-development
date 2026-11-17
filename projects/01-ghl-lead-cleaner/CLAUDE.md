@@ -58,7 +58,9 @@ Columns, in this order, with these exact headers:
 - Map common header variations (e.g. `email address`, `E-mail`, `mobile`, `contact no.`) to the columns above.
 - A row needs at least a valid email **or** a valid phone. Otherwise it goes to the rejected file.
 - If one of the two is invalid but the other is valid, keep the row and leave the invalid field blank.
-- Remove duplicates by email, then by phone. Keep the first occurrence.
+- Find duplicates by email, then by phone. Keep the first occurrence and merge the duplicate into it:
+  fill its blank fields, and combine Tags and Notes. Never replace a value the kept row already has.
+  The duplicate is listed in the rejected file as `duplicate email/phone (merged into row N)`.
 - Output encoding: UTF-8.
 
 ## Phone rules
