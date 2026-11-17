@@ -47,6 +47,11 @@ HEADER_ALIASES = {
     "tag": "Tags",
     "source": "Source",
     "lead source": "Source",
+    "notes": "Notes",
+    "note": "Notes",
+    "comments": "Notes",
+    "comment": "Notes",
+    "remarks": "Notes",
 }
 
 

@@ -33,7 +33,8 @@ from cleaners import (
 )
 
 # The exact GHL columns we output, in this order.
-GHL_COLUMNS = ["First Name", "Last Name", "Email", "Phone", "Company Name", "Tags", "Source"]
+# "Notes" is not a standard GHL field. Map it to a custom field when you import.
+GHL_COLUMNS = ["First Name", "Last Name", "Email", "Phone", "Company Name", "Tags", "Source", "Notes"]
 
 # Output files go next to this script, in a folder called "output".
 OUTPUT_FOLDER = Path(__file__).parent / "output"
@@ -80,6 +81,7 @@ def clean_dataframe(df, default_country, fallback_source, extra_tags):
     clean["Company Name"] = get_column(df, "Company Name").apply(clean_text)
     clean["Tags"] = get_column(df, "Tags").apply(lambda value: clean_tags(value, extra_tags))
     clean["Source"] = get_column(df, "Source").apply(lambda value: clean_source(value, fallback_source))
+    clean["Notes"] = get_column(df, "Notes").apply(clean_text)
 
     return clean
 

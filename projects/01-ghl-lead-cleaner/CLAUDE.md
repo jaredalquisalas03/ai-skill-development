@@ -52,10 +52,12 @@ Columns, in this order, with these exact headers:
 | Company Name | Trimmed |
 | Tags | Comma-separated, lowercase, no duplicates |
 | Source | Passed through or set from `--source` flag |
+| Notes | Trimmed. Not a standard GHL field: map it to a custom field on import |
 
 - If only a "Full Name" column exists, split on the first space.
 - Map common header variations (e.g. `email address`, `E-mail`, `mobile`, `contact no.`) to the columns above.
 - A row needs at least a valid email **or** a valid phone. Otherwise it goes to the rejected file.
+- If one of the two is invalid but the other is valid, keep the row and leave the invalid field blank.
 - Remove duplicates by email, then by phone. Keep the first occurrence.
 - Output encoding: UTF-8.
 
@@ -71,7 +73,7 @@ Strip everything except digits and a leading `+` first. Then:
 - Numbers with a `+` or country code are read as-is.
 - Numbers without a country code are **ambiguous** (e.g. a 10-digit number starting with 9 could be PH or US).
   Use the `--default-country` flag (PH, US or AU) to decide. Never guess silently.
-- Anything that doesn't match goes to the rejected file with `reject_reason = "invalid phone"`.
+- An invalid phone is left blank. If the row also has no valid email, it goes to the rejected file with `reject_reason = "invalid phone"`.
 
 ## Coding style
 - Each cleaning function takes one value and returns the cleaned value (or `None` if invalid).
