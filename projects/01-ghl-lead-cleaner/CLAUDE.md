@@ -23,7 +23,7 @@ They should be able to run it with one command and understand the code by readin
   requirements.txt     # pandas only
   clean_leads.py       # Main script (entry point)
   cleaners.py          # Small cleaning functions (name, email, phone, tags)
-  sample_data/
+  sample-data/
     messy_leads.csv    # Fake data only
   input/               # User drops real files here (git-ignored)
   output/              # Clean + rejected files land here (git-ignored)
@@ -86,7 +86,7 @@ Strip everything except digits and a leading `+` first. Then:
   ```bash
   python -m unittest discover tests
   ```
-- Before finishing any change, run the tool on `sample_data/messy_leads.csv` and check the output.
+- Before finishing any change, run the tool on `sample-data/messy_leads.csv` and check the output.
 
 ## When unsure
 Ask before adding a new dependency, a new country, or changing the output columns.
