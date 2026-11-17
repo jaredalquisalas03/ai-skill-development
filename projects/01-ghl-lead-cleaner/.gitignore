@@ -1,3 +1,6 @@
-input/
-output/
+# Keep the folders, but never upload what is inside them (client data)
+input/*
+!input/.gitkeep
+output/*
+!output/.gitkeep
 __pycache__/
