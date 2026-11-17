@@ -33,6 +33,8 @@ HEADER_ALIASES = {
     "email": "Email",
     "e mail": "Email",
     "email address": "Email",
+    "e mail address": "Email",
+    "emailaddress": "Email",
     "phone": "Phone",
     "phone number": "Phone",
     "mobile": "Phone",

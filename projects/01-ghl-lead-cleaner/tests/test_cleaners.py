@@ -11,7 +11,7 @@ from pathlib import Path
 # Let the tests find cleaners.py in the folder above
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from cleaners import AMBIGUOUS, clean_email, clean_name, clean_phone, clean_source, clean_tags, split_full_name
+from cleaners import AMBIGUOUS, standard_header, clean_email, clean_name, clean_phone, clean_source, clean_tags, split_full_name
 
 
 class TestPhilippinesPhones(unittest.TestCase):
@@ -82,6 +82,16 @@ class TestEmails(unittest.TestCase):
     def test_typos_are_rejected(self):
         for bad in ["a@@example.com", "a@example,com", "aexample.com", "a@example", "a@example..com", "a@example.cmo"]:
             self.assertIsNone(clean_email(bad), bad)
+
+
+class TestHeaders(unittest.TestCase):
+    def test_header_variations(self):
+        self.assertEqual(standard_header(" E-mail Address: "), "Email")
+        self.assertEqual(standard_header("Email Address"), "Email")
+        self.assertEqual(standard_header("Contact No."), "Phone")
+        self.assertEqual(standard_header("Mobile"), "Phone")
+        self.assertEqual(standard_header("Comments"), "Notes")
+        self.assertEqual(standard_header("Lead Source"), "Source")
 
 
 class TestNamesSourcesTags(unittest.TestCase):
