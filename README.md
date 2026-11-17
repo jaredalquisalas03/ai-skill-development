@@ -8,7 +8,7 @@ Focus areas: GoHighLevel funnels, email/SMS automation, CRM and pipeline setup, 
 
 | # | Project | Skills | Status |
 |---|---------|--------|--------|
-| 01 | [GHL Lead Cleaner](projects/01-ghl-lead-cleaner/) — Cleans messy lead CSVs into a GoHighLevel-ready import file. Fixes names, emails and PH/US/AU phones, and merges duplicates. | Python, pandas, data cleaning, GHL contact import | ✅ v1 complete |
+| 01 | [GHL Lead Cleaner](projects/01-ghl-lead-cleaner/) — Cleans messy lead CSVs into a GoHighLevel-ready import file. Fixes names, emails and PH/US/AU phones, and merges duplicates. [Case study](projects/01-ghl-lead-cleaner/CASE_STUDY.md) | Python, pandas, data cleaning, GHL contact import | ✅ v1 complete |
 
 ## Structure
 

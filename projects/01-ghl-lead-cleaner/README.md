@@ -4,6 +4,8 @@ Turn a messy lead spreadsheet into a clean file you can import straight into GoH
 
 Built for marketing VAs and agencies. No coding needed to use it.
 
+📄 **[Read the case study](CASE_STUDY.md)**: the problem, key decisions and results.
+
 ## What it fixes
 
 | Problem | Before | After |
