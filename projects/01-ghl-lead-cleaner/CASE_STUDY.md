@@ -1,4 +1,4 @@
-# Case Study: From Messy Lead List to GHL-Ready in Under a Second
+# Case Study: How I Turned 200 Messy Dental Leads Into a Clean GHL Import in 0.4 Seconds
 
 **Project:** GHL Lead Cleaner
 **Built by:** Jared, Marketing Automation Specialist
